@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\SonrisaDerrisa.Datos\SonrisaDerrisa.Datos.csproj" />
     <ProjectReference Include="..\SonrisaDerrisa.Entidades\SonrisaDerrisa.Entidades.csproj" />
+    <ProjectReference Include="..\SonrisaDerrisa.Datos\SonrisaDerrisa.Datos.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

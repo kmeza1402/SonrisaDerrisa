@@ -1,26 +1,23 @@
-var builder = WebApplication.CreateBuilder(args);
+using System.Globalization;
+using SonrisaDerrisa.Negocios;
 
-// Add services to the container.
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("es-MX");
+
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
+
+// La cadena de conexión vive en User Secrets (ConnectionStrings:SonrisaDerrisa), nunca en el repositorio.
+string? cadena = builder.Configuration.GetConnectionString("SonrisaDerrisa");
+if (!string.IsNullOrWhiteSpace(cadena))
+    Servicio.Configurar(cadena);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
-{
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
 
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
-
+app.MapRazorPages().WithStaticAssets();
 app.Run();

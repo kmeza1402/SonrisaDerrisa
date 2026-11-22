@@ -1,0 +1,45 @@
+@page
+@model SonrisaDerrisa.Web.Pages.Dentistas.EditarModel
+@{ ViewData["Title"] = Model.Dentista.IdDentista == 0 ? "Nuevo dentista" : "Editar dentista"; }
+
+<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+
+<form method="post" class="bg-white p-3 rounded shadow-sm" style="max-width: 760px">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+    <input type="hidden" asp-for="Dentista.IdDentista" />
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="Dentista.Nombre" class="form-label">Nombre *</label>
+            <input asp-for="Dentista.Nombre" class="form-control" />
+            <span asp-validation-for="Dentista.Nombre" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Dentista.Apellidos" class="form-label">Apellidos *</label>
+            <input asp-for="Dentista.Apellidos" class="form-control" />
+            <span asp-validation-for="Dentista.Apellidos" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Dentista.Cedula" class="form-label">Cédula profesional *</label>
+            <input asp-for="Dentista.Cedula" class="form-control" placeholder="CED-00000" />
+            <span asp-validation-for="Dentista.Cedula" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Dentista.Telefono" class="form-label">Teléfono</label>
+            <input asp-for="Dentista.Telefono" class="form-control" maxlength="10" />
+            <span asp-validation-for="Dentista.Telefono" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Dentista.IdEspecialidad" class="form-label">Especialidad *</label>
+            <select asp-for="Dentista.IdEspecialidad" asp-items="Model.Especialidades" class="form-select">
+                <option value="0">Seleccione…</option>
+            </select>
+            <span asp-validation-for="Dentista.IdEspecialidad" class="text-danger small"></span>
+        </div>
+    </div>
+    <div class="mt-4">
+        <button class="btn btn-primary">Guardar</button>
+        <a class="btn btn-outline-secondary" asp-page="Index">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

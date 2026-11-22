@@ -1,0 +1,302 @@
+--------------
+SELECT id_cita, fn_saldo_cita(id_cita) AS saldo FROM cita WHERE id_cita IN (1, 2, 4, 8, 11)
+--------------
+
++---------+---------+
+| id_cita | saldo   |
++---------+---------+
+|       1 |    0.00 |
+|       2 | 1000.00 |
+|       4 |  700.00 |
+|      11 |  400.00 |
+|       8 |  400.00 |
++---------+---------+
+5 rows in set (0.00 sec)
+
+--------------
+SELECT fn_saldo_cita(12) AS saldo_cita_programada
+--------------
+
++-----------------------+
+| saldo_cita_programada |
++-----------------------+
+|                  0.00 |
++-----------------------+
+1 row in set (0.00 sec)
+
+--------------
+INSERT INTO cita (id_paciente, id_dentista, fecha, hora, motivo) VALUES (8, 1, '2026-12-01', '09:00', 'Valoración')
+--------------
+
+ERROR 1644 (45000) at line 17: El paciente debe tener historial clínico antes de agendar una cita.
+--------------
+INSERT INTO cita (id_paciente, id_dentista, fecha, hora, motivo) VALUES (5, 1, '2026-11-25', '11:00', 'Limpieza')
+--------------
+
+ERROR 1644 (45000) at line 19: El dentista ya tiene una cita en esa fecha y hora.
+--------------
+INSERT INTO cita (id_paciente, id_dentista, fecha, hora, motivo) VALUES (2, 1, '2026-10-20', '09:00', 'Hueco por cancelación')
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+SELECT id_cita, id_paciente, fecha, hora, estado FROM cita WHERE id_dentista = 1 AND fecha = '2026-10-20'
+--------------
+
++---------+-------------+------------+----------+------------+
+| id_cita | id_paciente | fecha      | hora     | estado     |
++---------+-------------+------------+----------+------------+
+|       6 |           6 | 2026-10-20 | 09:00:00 | Cancelada  |
+|      15 |           2 | 2026-10-20 | 09:00:00 | Programada |
++---------+-------------+------------+----------+------------+
+2 rows in set (0.00 sec)
+
+--------------
+UPDATE cita SET fecha = '2026-11-10', hora = '09:00' WHERE id_cita = 12
+--------------
+
+ERROR 1644 (45000) at line 27: El dentista ya tiene una cita en esa fecha y hora.
+--------------
+INSERT INTO detalle_cita (id_cita, id_tratamiento, precio_aplicado) VALUES (13, 1, 600)
+--------------
+
+ERROR 1644 (45000) at line 31: Solo las citas atendidas pueden tener tratamientos.
+--------------
+INSERT INTO pago (id_cita, monto, metodo_pago) VALUES (4, 900, 'Efectivo')
+--------------
+
+ERROR 1644 (45000) at line 35: El pago excede el saldo pendiente de la cita.
+--------------
+INSERT INTO pago (id_cita, monto, metodo_pago) VALUES (4, 700, 'Efectivo')
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+SELECT fn_saldo_cita(4) AS saldo_cita_4
+--------------
+
++--------------+
+| saldo_cita_4 |
++--------------+
+|         0.00 |
++--------------+
+1 row in set (0.00 sec)
+
+--------------
+CALL sp_atender_cita(13, 1, NULL, 500.00, 300.00, 'Efectivo')
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+SELECT id_cita, estado FROM cita WHERE id_cita = 13
+--------------
+
++---------+----------+
+| id_cita | estado   |
++---------+----------+
+|      13 | Atendida |
++---------+----------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT * FROM detalle_cita WHERE id_cita = 13
+--------------
+
++------------+---------+----------------+--------+-----------------+
+| id_detalle | id_cita | id_tratamiento | diente | precio_aplicado |
++------------+---------+----------------+--------+-----------------+
+|         14 |      13 |              1 | NULL   |          500.00 |
++------------+---------+----------------+--------+-----------------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT * FROM pago WHERE id_cita = 13
+--------------
+
++---------+---------+------------+--------+-------------+
+| id_pago | id_cita | fecha_pago | monto  | metodo_pago |
++---------+---------+------------+--------+-------------+
+|      12 |      13 | 2026-11-21 | 300.00 | Efectivo    |
++---------+---------+------------+--------+-------------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT fn_saldo_cita(13) AS saldo_cita_13
+--------------
+
++---------------+
+| saldo_cita_13 |
++---------------+
+|        200.00 |
++---------------+
+1 row in set (0.00 sec)
+
+--------------
+CALL sp_atender_cita(999, 1, NULL, NULL, NULL, NULL)
+--------------
+
+ERROR 1644 (45000) at line 49: La cita no existe.
+--------------
+CALL sp_atender_cita(6, 3, '48', NULL, NULL, NULL)
+--------------
+
+ERROR 1644 (45000) at line 51: No se puede atender una cita cancelada.
+--------------
+CALL sp_atender_cita(14, 7, NULL, NULL, 5000.00, 'Tarjeta')
+--------------
+
+ERROR 1644 (45000) at line 54: El pago excede el saldo pendiente de la cita.
+--------------
+SELECT id_cita, estado FROM cita WHERE id_cita = 14
+--------------
+
++---------+------------+
+| id_cita | estado     |
++---------+------------+
+|      14 | Programada |
++---------+------------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT COUNT(*) AS detalles_cita_14 FROM detalle_cita WHERE id_cita = 14
+--------------
+
++------------------+
+| detalles_cita_14 |
++------------------+
+|                0 |
++------------------+
+1 row in set (0.00 sec)
+
+--------------
+CALL sp_atender_cita(14, 2, '99', NULL, NULL, NULL)
+--------------
+
+ERROR 3819 (HY000) at line 58: Check constraint 'ck_detalle_diente' is violated.
+--------------
+SELECT id_cita, estado FROM cita WHERE id_cita = 14
+--------------
+
++---------+------------+
+| id_cita | estado     |
++---------+------------+
+|      14 | Programada |
++---------+------------+
+1 row in set (0.00 sec)
+
+--------------
+CALL sp_estado_cuenta_paciente(2)
+--------------
+
++---------+------------+------------------------+---------+---------+---------+
+| id_cita | fecha      | dentista               | total   | pagado  | saldo   |
++---------+------------+------------------------+---------+---------+---------+
+|       2 | 2026-10-06 | Claudia Fuentes Ortega | 3800.00 | 2800.00 | 1000.00 |
+|      10 | 2026-11-13 | Claudia Fuentes Ortega |    0.00 |    0.00 |    0.00 |
++---------+------------+------------------------+---------+---------+---------+
+2 rows in set (0.00 sec)
+
++------------------+---------------+----------------+---------------+
+| paciente         | total_general | pagado_general | saldo_general |
++------------------+---------------+----------------+---------------+
+| Luis Pérez Soto  |       3800.00 |        2800.00 |       1000.00 |
++------------------+---------------+----------------+---------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+CALL sp_estado_cuenta_paciente(999)
+--------------
+
+ERROR 1644 (45000) at line 65: El paciente no existe.
+--------------
+DELETE FROM dentista WHERE id_dentista = 1
+--------------
+
+ERROR 1451 (23000) at line 69: Cannot delete or update a parent row: a foreign key constraint fails (`sonrisa_derrisa`.`cita`, CONSTRAINT `fk_cita_dentista` FOREIGN KEY (`id_dentista`) REFERENCES `dentista` (`id_dentista`) ON DELETE RESTRICT ON UPDATE CASCADE)
+--------------
+INSERT INTO dentista (nombre, apellidos, cedula, id_especialidad) VALUES ('Otro', 'Dentista', 'CED-10001', 1)
+--------------
+
+ERROR 1062 (23000) at line 71: Duplicate entry 'CED-10001' for key 'dentista.uq_dentista_cedula'
+--------------
+INSERT INTO historial_clinico (id_paciente, alergias) VALUES (1, 'Ninguna')
+--------------
+
+ERROR 1062 (23000) at line 73: Duplicate entry '1' for key 'historial_clinico.uq_historial_paciente'
+--------------
+UPDATE cita SET estado = 'Pendiente' WHERE id_cita = 12
+--------------
+
+ERROR 3819 (HY000) at line 75: Check constraint 'ck_cita_estado' is violated.
+--------------
+INSERT INTO pago (id_cita, monto, metodo_pago) VALUES (11, 0, 'Efectivo')
+--------------
+
+ERROR 3819 (HY000) at line 77: Check constraint 'ck_pago_monto' is violated.
+--------------
+INSERT INTO paciente (nombre, apellidos, telefono) VALUES ('Prueba', 'Teléfono', '64612AB')
+--------------
+
+ERROR 3819 (HY000) at line 79: Check constraint 'ck_paciente_telefono' is violated.
+--------------
+INSERT INTO paciente (nombre, apellidos, telefono) VALUES ('Temporal', 'Cascada', '6460000000')
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+SET @tmp = LAST_INSERT_ID()
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+INSERT INTO historial_clinico (id_paciente) VALUES (@tmp)
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+DELETE FROM paciente WHERE id_paciente = @tmp
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+SELECT COUNT(*) AS historiales_huerfanos FROM historial_clinico WHERE id_paciente = @tmp
+--------------
+
++-----------------------+
+| historiales_huerfanos |
++-----------------------+
+|                     0 |
++-----------------------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT 'paciente' AS tabla, COUNT(*) AS registros FROM paciente
+UNION ALL SELECT 'historial_clinico', COUNT(*) FROM historial_clinico
+UNION ALL SELECT 'dentista', COUNT(*) FROM dentista
+UNION ALL SELECT 'cita', COUNT(*) FROM cita
+UNION ALL SELECT 'detalle_cita', COUNT(*) FROM detalle_cita
+UNION ALL SELECT 'pago', COUNT(*) FROM pago
+--------------
+
++-------------------+-----------+
+| tabla             | registros |
++-------------------+-----------+
+| paciente          |         8 |
+| historial_clinico |         7 |
+| dentista          |         5 |
+| cita              |        15 |
+| detalle_cita      |        14 |
+| pago              |        12 |
++-------------------+-----------+
+6 rows in set (0.00 sec)
+
+Bye
