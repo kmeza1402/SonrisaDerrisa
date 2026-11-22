@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SonrisaDerrisa.Datos/SonrisaDerrisa.Datos.csproj" />
+  <Project Path="SonrisaDerrisa.Entidades/SonrisaDerrisa.Entidades.csproj" />
+  <Project Path="SonrisaDerrisa.Negocios/SonrisaDerrisa.Negocios.csproj" />
+  <Project Path="SonrisaDerrisa.Web/SonrisaDerrisa.Web.csproj" />
+</Solution>
