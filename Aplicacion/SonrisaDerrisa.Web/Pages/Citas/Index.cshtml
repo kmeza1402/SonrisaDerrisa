@@ -1,0 +1,86 @@
+@page
+@model SonrisaDerrisa.Web.Pages.Citas.IndexModel
+@{ ViewData["Title"] = "Citas"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 m-0">Agenda de citas</h1>
+    <a class="btn btn-primary" asp-page="Editar">Agendar cita</a>
+</div>
+
+<form method="get" class="row g-2 mb-3 bg-white p-2 rounded shadow-sm">
+    <div class="col-6 col-md-2">
+        <label class="form-label small mb-0" asp-for="Desde">Desde</label>
+        <input class="form-control form-control-sm" asp-for="Desde" type="date" />
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label small mb-0" asp-for="Hasta">Hasta</label>
+        <input class="form-control form-control-sm" asp-for="Hasta" type="date" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label small mb-0" asp-for="Dentista">Dentista</label>
+        <select class="form-select form-select-sm" asp-for="Dentista" asp-items="Model.Dentistas">
+            <option value="0">Todos</option>
+        </select>
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label small mb-0" asp-for="Estado">Estado</label>
+        <select class="form-select form-select-sm" asp-for="Estado">
+            <option value="">Todos</option>
+            <option>Programada</option>
+            <option>Atendida</option>
+            <option>Cancelada</option>
+        </select>
+    </div>
+    <div class="col-6 col-md-3">
+        <label class="form-label small mb-0" asp-for="Paciente">Paciente</label>
+        <input class="form-control form-control-sm" asp-for="Paciente" />
+    </div>
+    <div class="col-12">
+        <button class="btn btn-sm btn-outline-primary">Filtrar</button>
+        <a class="btn btn-sm btn-link" asp-page="Index">Limpiar</a>
+    </div>
+</form>
+
+@if (Model.Lista.Count == 0)
+{
+    <div class="vacio">No hay citas con los filtros seleccionados.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-hover bg-white align-middle">
+            <thead><tr><th>#</th><th>Fecha</th><th>Hora</th><th>Paciente</th><th>Dentista</th><th>Motivo</th><th>Alergias</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var c in Model.Lista)
+                {
+                    <tr>
+                        <td>@c.IdCita</td>
+                        <td>@c.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>@c.Hora.ToString(@"hh\:mm")</td>
+                        <td>@c.Paciente</td>
+                        <td>@c.Dentista<br /><small class="text-muted">@c.Especialidad</small></td>
+                        <td>@(c.Motivo ?? "—")</td>
+                        <td>@if (c.Alergias != null) { <span class="badge bg-danger">@c.Alergias</span> } else { <span>—</span> }</td>
+                        <td><span class="badge badge-@c.Estado">@c.Estado</span></td>
+                        <td class="text-end text-nowrap">
+                            @if (c.Estado == "Programada")
+                            {
+                                <a class="btn btn-sm btn-success" asp-page="Atender" asp-route-id="@c.IdCita">Atender</a>
+                                <a class="btn btn-sm btn-outline-primary" asp-page="Editar" asp-route-id="@c.IdCita">Editar</a>
+                                <form method="post" asp-page-handler="Cancelar" asp-route-id="@c.IdCita" class="d-inline"
+                                      onsubmit="return confirm('¿Cancelar la cita #@c.IdCita?');">
+                                    <button class="btn btn-sm btn-outline-danger">Cancelar</button>
+                                </form>
+                            }
+                            else if (c.Estado == "Atendida")
+                            {
+                                <a class="btn btn-sm btn-outline-success" asp-page="Pago" asp-route-id="@c.IdCita">Registrar pago</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <p class="text-muted small">@Model.Lista.Count cita(s).</p>
+}

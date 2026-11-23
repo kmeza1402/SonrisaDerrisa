@@ -1,0 +1,51 @@
+@page
+@model SonrisaDerrisa.Web.Pages.Pacientes.IndexModel
+@{ ViewData["Title"] = "Pacientes"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 m-0">Pacientes</h1>
+    <a class="btn btn-primary" asp-page="Editar">Nuevo paciente</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-sm-8 col-md-6">
+        <input class="form-control" asp-for="Buscar" placeholder="Buscar por nombre o teléfono" />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary">Buscar</button>
+        <a class="btn btn-link" asp-page="Index">Limpiar</a>
+    </div>
+</form>
+
+@if (Model.Lista.Count == 0)
+{
+    <div class="vacio">No hay pacientes que coincidan con la búsqueda.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-hover bg-white align-middle">
+            <thead><tr><th>Paciente</th><th>Teléfono</th><th>Correo</th><th>Historial</th><th>Alergias</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var p in Model.Lista)
+                {
+                    <tr>
+                        <td>@p.NombreCompleto</td>
+                        <td>@p.Telefono</td>
+                        <td>@(p.Correo ?? "—")</td>
+                        <td>@if (p.TieneHistorial) { <span class="badge bg-success">Sí</span> } else { <span class="badge bg-warning text-dark">Falta</span> }</td>
+                        <td>@(p.Alergias ?? "—")</td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" asp-page="Editar" asp-route-id="@p.IdPaciente">Editar</a>
+                            <form method="post" asp-page-handler="Eliminar" asp-route-id="@p.IdPaciente" class="d-inline"
+                                  onsubmit="return confirm('¿Eliminar a @p.NombreCompleto?');">
+                                <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <p class="text-muted small">@Model.Lista.Count paciente(s).</p>
+}

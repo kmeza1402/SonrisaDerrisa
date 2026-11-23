@@ -1,10 +1,31 @@
-﻿@page
+@page
 @model IndexModel
-@{
-    ViewData["Title"] = "Home page";
+@{ ViewData["Title"] = "Inicio"; }
+
+<h1 class="h3 mb-1">Sonrisa Derrisa</h1>
+<p class="text-muted">Sistema de citas, tratamientos y pagos para clínica dental.</p>
+
+@if (Model.Error != null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var c in Model.Conteos)
+        {
+            <div class="col-6 col-md-3">
+                <div class="card card-resumen shadow-sm"><div class="card-body">
+                    <div class="text-muted small">@c.Nombre</div>
+                    <div class="fs-3 fw-bold">@c.Total</div>
+                </div></div>
+            </div>
+        }
+    </div>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="mt-4 d-flex flex-wrap gap-2">
+    <a class="btn btn-primary" asp-page="/Citas/Editar">Agendar cita</a>
+    <a class="btn btn-outline-primary" asp-page="/Pacientes/Editar">Nuevo paciente</a>
+    <a class="btn btn-outline-secondary" asp-page="/Reportes/Saldos">Ver saldos pendientes</a>
 </div>

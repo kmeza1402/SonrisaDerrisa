@@ -1,0 +1,62 @@
+@page
+@model SonrisaDerrisa.Web.Pages.Pacientes.EditarModel
+@{ ViewData["Title"] = Model.Paciente.IdPaciente == 0 ? "Nuevo paciente" : "Editar paciente"; }
+
+<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+
+<form method="post" class="bg-white p-3 rounded shadow-sm" style="max-width: 760px">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+    <input type="hidden" asp-for="Paciente.IdPaciente" />
+
+    <h2 class="h6 text-muted">Datos personales</h2>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="Paciente.Nombre" class="form-label">Nombre *</label>
+            <input asp-for="Paciente.Nombre" class="form-control" />
+            <span asp-validation-for="Paciente.Nombre" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Paciente.Apellidos" class="form-label">Apellidos *</label>
+            <input asp-for="Paciente.Apellidos" class="form-control" />
+            <span asp-validation-for="Paciente.Apellidos" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Paciente.Telefono" class="form-label">Teléfono *</label>
+            <input asp-for="Paciente.Telefono" class="form-control" maxlength="10" placeholder="10 dígitos" />
+            <span asp-validation-for="Paciente.Telefono" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Paciente.Correo" class="form-label">Correo</label>
+            <input asp-for="Paciente.Correo" class="form-control" />
+            <span asp-validation-for="Paciente.Correo" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Paciente.FechaNacimiento" class="form-label"></label>
+            <input asp-for="Paciente.FechaNacimiento" class="form-control" />
+            <span asp-validation-for="Paciente.FechaNacimiento" class="text-danger small"></span>
+        </div>
+    </div>
+
+    <h2 class="h6 text-muted mt-4">Historial clínico</h2>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label asp-for="Paciente.Alergias" class="form-label">Alergias</label>
+            <input asp-for="Paciente.Alergias" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Paciente.Enfermedades" class="form-label">Enfermedades</label>
+            <input asp-for="Paciente.Enfermedades" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Paciente.Medicamentos" class="form-label">Medicamentos</label>
+            <input asp-for="Paciente.Medicamentos" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button class="btn btn-primary">Guardar</button>
+        <a class="btn btn-outline-secondary" asp-page="Index">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,37 @@
+﻿ID,Requisito,Precondición,Entrada,Pasos,Resultado esperado,Resultado observado,Estado,Evidencia
+CP-01,"RF01, RN2",Aplicación iniciada,"Sofía Herrera Campos, 6461230009, alergia Amoxicilina",Pacientes → Nuevo → capturar → Guardar,Paciente e historial guardados en una transacción,Mensaje 'Paciente e historial clínico registrados.'; aparece con historial 'Sí',Aprobado,cp01_alta_paciente.jpg
+CP-02,"RF01, RN1",Formulario de paciente,Teléfono '64612AB',Capturar teléfono inválido → Guardar,Se rechaza sin llegar a la BD,'El teléfono debe tener 10 dígitos.',Aprobado,cp02_telefono_invalido.jpg
+CP-03,"RF05, RN2",Diego no tiene historial,"Diego, Dra. Morales, 01/12/2026 09:00",Citas → Agendar → Guardar,Rechazo del trigger trg_cita_bi,'El paciente debe tener historial clínico antes de agendar una cita.',Aprobado,cp03_cita_sin_historial.jpg
+CP-04,"RF05, RN5",Dra. Morales tiene cita 25/11 11:00,"Sofía, Dra. Morales, 25/11/2026 11:00",Agendar en horario ocupado,Rechazo por empalme,'El dentista ya tiene una cita en esa fecha y hora.',Aprobado,cp04_empalme.jpg
+CP-05,RF05,Horario libre,"Sofía, Dra. Morales, 25/11/2026 12:00",Agendar → Guardar,Cita creada como Programada,'Cita agendada.'; cita 15 con alerta Amoxicilina,Aprobado,cp05_cita_agendada.jpg
+CP-06,"RF08, RN11",Cita 14 programada,"Blanqueamiento 2800, abono 5000 Tarjeta",Atender → Confirmar,ROLLBACK: nada se guarda,Mensaje de error; en BD la cita sigue Programada con 0 detalles y 0 pagos,Aprobado,cp06_atender_rollback.jpg
+CP-07,RF08,Cita 14 programada,"Blanqueamiento 2800, abono 1000 Tarjeta",Atender → Confirmar,"Cita Atendida, detalle y pago creados","'Cita #14 atendida. Saldo pendiente: $1,800.00.'",Aprobado,cp07_atender_cita.jpg
+CP-08,"RF09, RN11",Cita 14 con saldo 1800,Monto 2000 Efectivo,Registrar pago,Rechazo del trigger trg_pago_bi,'El pago excede el saldo pendiente de la cita.',Aprobado,cp08_pago_excede.jpg
+CP-09,"RF09, RF12",Cita 14 con saldo 1800,Monto 800 Efectivo,Registrar pago,Pago guardado y reporte actualizado,"Saldo de la cita 14 = $1,000; totales $10,000 / $6,500 / $3,500",Aprobado,cp09_pago_y_reporte.jpg
+CP-10,"RF12, RF13",Sofía sin citas atendidas,"Paciente 'Sofía', sólo pendientes",Reporte de saldos → Consultar,Estado vacío,'No hay citas atendidas que cumplan los criterios.',Aprobado,cp10_estado_vacio.jpg
+CP-11,"RF03, integridad",Dra. Morales tiene 6 citas,Eliminar dentista 1,Dentistas → Eliminar → Confirmar,FK RESTRICT impide borrar,'No se puede eliminar porque tiene citas…' (tras corregir INC-02),Aprobado,cp11_eliminar_dentista_fk.jpg
+CP-12,"RF03, RN3",Existe CED-10001,"Martha Lozano, CED-10001",Dentistas → Nuevo → Guardar,Rechazo por UNIQUE,'Ya existe un dentista con esa cédula.',Aprobado,cp12_cedula_duplicada.jpg
+CP-13,Persistencia,Datos de CP-01 a CP-09,Reiniciar la aplicación,Detener y volver a iniciar el servidor; filtrar agenda por Sofía,Los datos siguen en MySQL,Cita 15 y paciente 9 presentes; consulta directa en BD coincide,Aprobado,cp13_persistencia.jpg
+PF-01,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,"fn_saldo_cita de citas 1, 2, 4, 8, 11",Ejecutar 05_pruebas.sql,"Saldos 0, 1000, 700, 400, 400",Correcto,Aprobado,resultados_sql/05_pruebas.txt
+PF-02,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,fn_saldo_cita de cita programada 12,Ejecutar 05_pruebas.sql,0.00,0.00,Aprobado,resultados_sql/05_pruebas.txt
+PT-01,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Cita para paciente sin historial (8),Ejecutar 05_pruebas.sql,ERROR 1644 RN2,ERROR 1644 'El paciente debe tener historial…',Aprobado,resultados_sql/05_pruebas.txt
+PT-02,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,"Cita empalmada dentista 1, 25/11 11:00",Ejecutar 05_pruebas.sql,ERROR 1644 RN5,ERROR 1644 'El dentista ya tiene una cita…',Aprobado,resultados_sql/05_pruebas.txt
+PT-03,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Cita en horario de cita cancelada,Ejecutar 05_pruebas.sql,Se inserta,Insertada (cita 15),Aprobado,resultados_sql/05_pruebas.txt
+PT-04,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Reprogramar cita 12 a horario ocupado,Ejecutar 05_pruebas.sql,ERROR 1644 RN5,ERROR 1644,Aprobado,resultados_sql/05_pruebas.txt
+PT-05,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Tratamiento en cita programada,Ejecutar 05_pruebas.sql,ERROR 1644 RN7,ERROR 1644 'Solo las citas atendidas…',Aprobado,resultados_sql/05_pruebas.txt
+PT-06,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Pago 900 con saldo 700,Ejecutar 05_pruebas.sql,ERROR 1644 RN11,ERROR 1644 'El pago excede…',Aprobado,resultados_sql/05_pruebas.txt
+PT-07,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Pago exacto 700,Ejecutar 05_pruebas.sql,"Se inserta, saldo 0",Saldo 0.00,Aprobado,resultados_sql/05_pruebas.txt
+PP-01,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,"sp_atender_cita(13, limpieza 500, abono 300)",Ejecutar 05_pruebas.sql,Atendida + detalle + pago,Saldo 200.00,Aprobado,resultados_sql/05_pruebas.txt
+PP-02,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,sp_atender_cita cita 999,Ejecutar 05_pruebas.sql,ERROR 'La cita no existe.',ERROR 1644,Aprobado,resultados_sql/05_pruebas.txt
+PP-03,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,sp_atender_cita cita cancelada,Ejecutar 05_pruebas.sql,ERROR,ERROR 1644 'No se puede atender…',Aprobado,resultados_sql/05_pruebas.txt
+PP-04,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,sp_atender_cita abono 5000 > 2800,Ejecutar 05_pruebas.sql,ROLLBACK total,"Cita sigue Programada, 0 detalles",Aprobado,resultados_sql/05_pruebas.txt
+PP-05,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,sp_atender_cita diente '99',Ejecutar 05_pruebas.sql,ROLLBACK por CHECK,"ERROR 3819, cita sigue Programada",Aprobado,resultados_sql/05_pruebas.txt
+PP-06,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,sp_estado_cuenta_paciente(2),Ejecutar 05_pruebas.sql,2 conjuntos de resultados,"Total 3800, pagado 2800, saldo 1000",Aprobado,resultados_sql/05_pruebas.txt
+PP-07,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,sp_estado_cuenta_paciente(999),Ejecutar 05_pruebas.sql,ERROR,ERROR 1644 'El paciente no existe.',Aprobado,resultados_sql/05_pruebas.txt
+PR-01,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Eliminar dentista con citas,Ejecutar 05_pruebas.sql,ERROR 1451,ERROR 1451,Aprobado,resultados_sql/05_pruebas.txt
+PR-02,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Cédula repetida,Ejecutar 05_pruebas.sql,ERROR 1062,ERROR 1062,Aprobado,resultados_sql/05_pruebas.txt
+PR-03,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Segundo historial del paciente 1,Ejecutar 05_pruebas.sql,ERROR 1062,ERROR 1062,Aprobado,resultados_sql/05_pruebas.txt
+PR-04,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Estado 'Pendiente',Ejecutar 05_pruebas.sql,ERROR 3819,ERROR 3819,Aprobado,resultados_sql/05_pruebas.txt
+PR-05,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Pago de 0,Ejecutar 05_pruebas.sql,ERROR 3819,ERROR 3819,Aprobado,resultados_sql/05_pruebas.txt
+PR-06,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Teléfono '64612AB',Ejecutar 05_pruebas.sql,ERROR 3819,ERROR 3819,Aprobado,resultados_sql/05_pruebas.txt
+PR-07,Rutinas/restricciones SQL,Scripts 01-04 ejecutados,Borrar paciente con historial,Ejecutar 05_pruebas.sql,Historial borrado en cascada,0 historiales huérfanos,Aprobado,resultados_sql/05_pruebas.txt

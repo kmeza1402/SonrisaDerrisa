@@ -1,0 +1,46 @@
+@page
+@model SonrisaDerrisa.Web.Pages.Citas.EditarModel
+@{ ViewData["Title"] = Model.Cita.IdCita == 0 ? "Agendar cita" : $"Reprogramar cita #{Model.Cita.IdCita}"; }
+
+<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+
+<form method="post" class="bg-white p-3 rounded shadow-sm" style="max-width: 760px">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+    <input type="hidden" asp-for="Cita.IdCita" />
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="Cita.IdPaciente" class="form-label">Paciente *</label>
+            <select asp-for="Cita.IdPaciente" asp-items="Model.Pacientes" class="form-select">
+                <option value="0">Seleccione…</option>
+            </select>
+            <span asp-validation-for="Cita.IdPaciente" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Cita.IdDentista" class="form-label">Dentista *</label>
+            <select asp-for="Cita.IdDentista" asp-items="Model.Dentistas" class="form-select">
+                <option value="0">Seleccione…</option>
+            </select>
+            <span asp-validation-for="Cita.IdDentista" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Cita.Fecha" class="form-label">Fecha *</label>
+            <input asp-for="Cita.Fecha" class="form-control" />
+            <span asp-validation-for="Cita.Fecha" class="text-danger small"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Cita.Hora" class="form-label">Hora *</label>
+            <input asp-for="Cita.Hora" class="form-control" type="time" />
+            <span asp-validation-for="Cita.Hora" class="text-danger small"></span>
+        </div>
+        <div class="col-md-5">
+            <label asp-for="Cita.Motivo" class="form-label">Motivo</label>
+            <input asp-for="Cita.Motivo" class="form-control" />
+        </div>
+    </div>
+    <div class="mt-4">
+        <button class="btn btn-primary">Guardar</button>
+        <a class="btn btn-outline-secondary" asp-page="Index">Volver</a>
+    </div>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

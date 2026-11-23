@@ -1,0 +1,127 @@
++---------+------------+----------+------------------------+----------------------+----------------------+---------------------+
+| id_cita | fecha      | hora     | paciente               | dentista             | especialidad         | motivo              |
++---------+------------+----------+------------------------+----------------------+----------------------+---------------------+
+|      12 | 2026-11-25 | 11:00:00 | Ricardo Navarro León   | Andrea Morales Rivas | Odontología general  | Revisión de resina  |
+|      13 | 2026-11-26 | 16:00:00 | Fernanda Castillo Vega | Samuel Treviño Gil   | Odontopediatría      | Limpieza infantil   |
+|      14 | 2026-11-27 | 10:00:00 | Valeria Ochoa Duarte   | Isabel Quintero Lara | Odontología general  | Blanqueamiento      |
++---------+------------+----------+------------------------+----------------------+----------------------+---------------------+
++------------------------+------------+---------------------+--------+-------------+-----------------+
+| paciente               | fecha      | tratamiento         | diente | precio_base | precio_aplicado |
++------------------------+------------+---------------------+--------+-------------+-----------------+
+| Fernanda Castillo Vega | 2026-10-07 | Limpieza dental     | NULL   |      600.00 |          500.00 |
+| Héctor Salas Bravo     | 2026-10-27 | Extracción simple   | 48     |      700.00 |          700.00 |
+| Luis Pérez Soto        | 2026-10-06 | Valoración          | NULL   |      300.00 |          300.00 |
+| Luis Pérez Soto        | 2026-10-06 | Endodoncia          | 36     |     3500.00 |         3500.00 |
+| Luis Pérez Soto        | 2026-11-13 | Valoración          | NULL   |      300.00 |            0.00 |
+| Mariana Gómez Ruiz     | 2026-10-05 | Limpieza dental     | NULL   |      600.00 |          600.00 |
+| Mariana Gómez Ruiz     | 2026-11-10 | Resina              | 24     |      850.00 |          850.00 |
+| Paola Ibarra Montes    | 2026-10-14 | Ajuste de brackets  | NULL   |      900.00 |          900.00 |
+| Paola Ibarra Montes    | 2026-11-18 | Ajuste de brackets  | NULL   |      900.00 |          900.00 |
+| Ricardo Navarro León   | 2026-10-12 | Resina              | 16     |      850.00 |          850.00 |
+| Ricardo Navarro León   | 2026-10-12 | Resina              | 17     |      850.00 |          850.00 |
+| Valeria Ochoa Duarte   | 2026-11-03 | Sellador de fosetas | 36     |      400.00 |          400.00 |
+| Valeria Ochoa Duarte   | 2026-11-03 | Sellador de fosetas | 46     |      400.00 |          400.00 |
++------------------------+------------+---------------------+--------+-------------+-----------------+
++------------+----------+-----------------------+----------+-----------------+----------------------+
+| fecha      | hora     | paciente              | alergias | enfermedades    | dentista             |
++------------+----------+-----------------------+----------+-----------------+----------------------+
+| 2026-11-25 | 11:00:00 | Ricardo Navarro León  | Látex    | Diabetes tipo 2 | Andrea Morales Rivas |
+| 2026-11-27 | 10:00:00 | Valeria Ochoa Duarte  | NULL     | Asma            | Isabel Quintero Lara |
++------------+----------+-----------------------+----------+-----------------+----------------------+
++-------------+----------------------+----------------+
+| id_paciente | paciente             | fecha_registro |
++-------------+----------------------+----------------+
+|           8 | Diego Rentería Luna  | 2026-11-15     |
++-------------+----------------------+----------------+
++-------------+------------------------+-----------+
+| id_dentista | dentista               | cedula    |
++-------------+------------------------+-----------+
+|           3 | Claudia Fuentes Ortega | CED-10003 |
++-------------+------------------------+-----------+
++---------------+-------+---------+
+| metodo_pago   | pagos | total   |
++---------------+-------+---------+
+| Tarjeta       |     3 | 3650.00 |
+| Efectivo      |     5 | 3200.00 |
+| Transferencia |     2 | 1400.00 |
++---------------+-------+---------+
++---------------------+-----------------+
+| paciente            | citas_atendidas |
++---------------------+-----------------+
+| Mariana Gómez Ruiz  |               2 |
+| Luis Pérez Soto     |               2 |
+| Paola Ibarra Montes |               2 |
++---------------------+-----------------+
++------------------------+-----------------+--------------------+-------------------+
+| dentista               | citas_atendidas | total_tratamientos | promedio_por_cita |
++------------------------+-----------------+--------------------+-------------------+
+| Claudia Fuentes Ortega |               2 |            3800.00 |           1900.00 |
+| Andrea Morales Rivas   |               3 |            3150.00 |           1050.00 |
+| Jorge Valdez Cruz      |               2 |            1800.00 |            900.00 |
+| Samuel Treviño Gil     |               2 |            1300.00 |            650.00 |
+| Isabel Quintero Lara   |               1 |             700.00 |            700.00 |
++------------------------+-----------------+--------------------+-------------------+
++---------+------------+-----------------------+---------+---------+---------+
+| id_cita | fecha      | paciente              | total   | pagado  | saldo   |
++---------+------------+-----------------------+---------+---------+---------+
+|       2 | 2026-10-06 | Luis Pérez Soto       | 3800.00 | 2800.00 | 1000.00 |
+|       4 | 2026-10-12 | Ricardo Navarro León  | 1700.00 | 1000.00 |  700.00 |
+|       8 | 2026-11-03 | Valeria Ochoa Duarte  |  800.00 |  400.00 |  400.00 |
+|      11 | 2026-11-18 | Paola Ibarra Montes   |  900.00 |  500.00 |  400.00 |
++---------+------------+-----------------------+---------+---------+---------+
++----------+------------------------+------------+
+| tipo     | nombre                 | telefono   |
++----------+------------------------+------------+
+| Dentista | Andrea Morales Rivas   | 6469870001 |
+| Dentista | Claudia Fuentes Ortega | 6469870003 |
+| Dentista | Jorge Valdez Cruz      | 6469870002 |
+| Dentista | Samuel Treviño Gil     | 6469870004 |
+| Paciente | Diego Rentería Luna    | 6461230008 |
+| Paciente | Fernanda Castillo Vega | 6461230003 |
+| Paciente | Héctor Salas Bravo     | 6461230006 |
+| Paciente | Luis Pérez Soto        | 6461230002 |
+| Paciente | Mariana Gómez Ruiz     | 6461230001 |
+| Paciente | Paola Ibarra Montes    | 6461230005 |
+| Paciente | Ricardo Navarro León   | 6461230004 |
+| Paciente | Valeria Ochoa Duarte   | 6461230007 |
++----------+------------------------+------------+
++---------+------------+----------+------------------------+------------------------+----------------------+------------+------------+
+| id_cita | fecha      | hora     | paciente               | dentista               | especialidad         | estado     | alergias   |
++---------+------------+----------+------------------------+------------------------+----------------------+------------+------------+
+|       8 | 2026-11-03 | 17:00:00 | Valeria Ochoa Duarte   | Samuel Treviño Gil     | Odontopediatría      | Atendida   | NULL       |
+|       9 | 2026-11-10 | 09:00:00 | Mariana Gómez Ruiz     | Andrea Morales Rivas   | Odontología general  | Atendida   | Penicilina |
+|      10 | 2026-11-13 | 10:00:00 | Luis Pérez Soto        | Claudia Fuentes Ortega | Endodoncia           | Atendida   | NULL       |
+|      11 | 2026-11-18 | 12:00:00 | Paola Ibarra Montes    | Jorge Valdez Cruz      | Ortodoncia           | Atendida   | NULL       |
+|      12 | 2026-11-25 | 11:00:00 | Ricardo Navarro León   | Andrea Morales Rivas   | Odontología general  | Programada | Látex      |
+|      13 | 2026-11-26 | 16:00:00 | Fernanda Castillo Vega | Samuel Treviño Gil     | Odontopediatría      | Programada | NULL       |
+|      14 | 2026-11-27 | 10:00:00 | Valeria Ochoa Duarte   | Isabel Quintero Lara   | Odontología general  | Programada | NULL       |
++---------+------------+----------+------------------------+------------------------+----------------------+------------+------------+
++---------+------------+----------+-------------+-----------------------+------------------------+---------+---------+---------+
+| id_cita | fecha      | estado   | id_paciente | paciente              | dentista               | total   | pagado  | saldo   |
++---------+------------+----------+-------------+-----------------------+------------------------+---------+---------+---------+
+|       2 | 2026-10-06 | Atendida |           2 | Luis Pérez Soto       | Claudia Fuentes Ortega | 3800.00 | 2800.00 | 1000.00 |
+|       4 | 2026-10-12 | Atendida |           4 | Ricardo Navarro León  | Andrea Morales Rivas   | 1700.00 | 1000.00 |  700.00 |
+|       8 | 2026-11-03 | Atendida |           7 | Valeria Ochoa Duarte  | Samuel Treviño Gil     |  800.00 |  400.00 |  400.00 |
+|      11 | 2026-11-18 | Atendida |           5 | Paola Ibarra Montes   | Jorge Valdez Cruz      |  900.00 |  500.00 |  400.00 |
++---------+------------+----------+-------------+-----------------------+------------------------+---------+---------+---------+
++---------------------+-------------+
+| nombre              | precio_base |
++---------------------+-------------+
+| Corona de porcelana |     6500.00 |
+| Limpieza dental     |      630.00 |
++---------------------+-------------+
++-------+--------------+---------+
+| paso  | pagos_cita_2 | total   |
++-------+--------------+---------+
+| Antes |            2 | 2800.00 |
++-------+--------------+---------+
++---------------------------+--------------+-------+
+| paso                      | pagos_cita_2 | total |
++---------------------------+--------------+-------+
+| Dentro de la transacción  |            0 |  NULL |
++---------------------------+--------------+-------+
++-----------------------+--------------+---------+
+| paso                  | pagos_cita_2 | total   |
++-----------------------+--------------+---------+
+| Después del ROLLBACK  |            2 | 2800.00 |
++-----------------------+--------------+---------+
