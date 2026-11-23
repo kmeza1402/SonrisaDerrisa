@@ -220,6 +220,12 @@ h2("2.4 Requerimientos no funcionales")
 bullets(["Integridad: las reglas críticas se validan en la base de datos, no sólo en la interfaz.",
          "Seguridad: la aplicación usa un usuario de MySQL con privilegios mínimos (SELECT, INSERT, UPDATE, "
          "DELETE, EXECUTE) y la cadena de conexión se guarda en User Secrets, fuera del repositorio.",
+         "Acceso: sólo la capa de datos del servidor abre conexiones a MySQL; el navegador nunca recibe "
+         "credenciales. El usuario root se reserva para crear el esquema y administrar la base.",
+         "Respaldo: la base se respalda con <i>mysqldump --routines --triggers --single-transaction "
+         "sonrisa_derrisa &gt; respaldo.sql</i>, que guarda tablas, datos, vistas, triggers, función y "
+         "procedimientos en un solo archivo; se restaura con <i>mysql sonrisa_derrisa &lt; respaldo.sql</i>. "
+         "Además, los scripts 01 a 04 permiten reconstruir la base desde cero.",
          "Reproducibilidad: la base completa se reconstruye ejecutando los scripts 01 a 04.",
          "Usabilidad: interfaz en español, responsiva (Bootstrap) y con mensajes comprensibles."])
 
@@ -345,7 +351,25 @@ h1("7. Etapa 6: Normalización (1FN a 3FN)")
 p("Se parte de la ficha que la clínica llevaba en la libreta, representada como una sola relación no normalizada:")
 S.append(codigo("FICHA(paciente, telefono, alergias, enfermedades, dentista, cedula, especialidad, fecha, hora, estado,\n"
                 "      {tratamiento, diente, precio_base, precio_aplicado}, {fecha_pago, monto, metodo_pago})", 8))
-h2("7.1 Primera forma normal (1FN)")
+h2("7.1 Dependencias funcionales y anomalías del esquema inicial")
+p("Dependencias funcionales identificadas en la ficha (reglas de negocio de la clínica):")
+S.append(codigo("paciente            → telefono, alergias, enfermedades\n"
+                "dentista            → cedula, especialidad\n"
+                "cedula              → dentista\n"
+                "tratamiento         → precio_base\n"
+                "(paciente, dentista, fecha, hora) → estado\n"
+                "(cita, tratamiento, diente)       → precio_aplicado", 8))
+p("Guardar todo en una sola relación provoca las tres anomalías clásicas:")
+bullets(["<b>Inserción:</b> no se puede registrar un dentista nuevo ni un tratamiento del catálogo hasta que "
+         "exista una cita que los use, porque la ficha sólo existe cuando hay cita.",
+         "<b>Actualización:</b> si un paciente cambia de teléfono o se descubre una alergia nueva, hay que "
+         "modificar todas sus fichas; si se olvida una, la base queda inconsistente y el dentista podría no ver "
+         "la alergia al atender. Lo mismo ocurre al cambiar el precio_base de un tratamiento.",
+         "<b>Eliminación:</b> al borrar la única cita de un paciente se pierden también su historial clínico y "
+         "sus pagos; al borrar la única cita de un dentista se pierde su cédula y especialidad."])
+p("La normalización de las secciones siguientes elimina estas anomalías: cada hecho se guarda una sola vez en la "
+  "tabla cuya llave lo determina.")
+h2("7.2 Primera forma normal (1FN)")
 p("La ficha tiene dos grupos repetitivos (los tratamientos y los abonos de la cita) y atributos compuestos "
   "(nombre completo). Se separan los nombres en <i>nombre</i> y <i>apellidos</i>, se asigna la llave "
   "<i>id_cita</i> y cada grupo repetitivo pasa a su propia relación con valores atómicos:")
@@ -353,7 +377,7 @@ S.append(codigo("CITA_1FN(id_cita, paciente_nombre, paciente_apellidos, telefono
                 "         dentista, cedula, especialidad, fecha, hora, motivo, estado)\n"
                 "DETALLE_1FN(id_cita, tratamiento, diente, precio_base, precio_aplicado)\n"
                 "PAGO_1FN(id_cita, num_pago, fecha_pago, monto, metodo_pago)", 8))
-h2("7.2 Segunda forma normal (2FN)")
+h2("7.3 Segunda forma normal (2FN)")
 p("En DETALLE_1FN la llave es compuesta (id_cita, tratamiento, diente), pero <i>precio_base</i> y la "
   "descripción dependen sólo de <i>tratamiento</i> (dependencia parcial). Se extrae el catálogo TRATAMIENTO y "
   "el detalle conserva únicamente lo que depende de la llave completa (<i>precio_aplicado</i>). En PAGO se usa "
@@ -361,7 +385,7 @@ p("En DETALLE_1FN la llave es compuesta (id_cita, tratamiento, diente), pero <i>
 S.append(codigo("TRATAMIENTO(id_tratamiento, nombre, descripcion, precio_base)\n"
                 "DETALLE_CITA(id_detalle, id_cita, id_tratamiento, diente, precio_aplicado)   UQ(id_cita, id_tratamiento, diente)\n"
                 "PAGO(id_pago, id_cita, fecha_pago, monto, metodo_pago)", 8))
-h2("7.3 Tercera forma normal (3FN)")
+h2("7.4 Tercera forma normal (3FN)")
 p("En CITA_1FN existen dependencias transitivas: id_cita → paciente → telefono, alergias; "
   "id_cita → dentista → cedula → especialidad. Se separan PACIENTE, HISTORIAL_CLINICO (1:1, datos médicos "
   "opcionales y confidenciales), DENTISTA y ESPECIALIDAD. El saldo no se almacena porque es un dato derivado "
