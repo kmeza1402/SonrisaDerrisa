@@ -15,16 +15,14 @@ Este es el sistema de citas, tratamientos y pagos para una clínica dental.
 |---|---|
 | `Reporte.pdf` | Reporte técnico completo (etapas 1 a 7, álgebra relacional, SQL, aplicación, pruebas, incidencias y conclusiones) |
 | `Sql/` | `01_esquema.sql`, `02_datos.sql`, `03_consultas_vistas.sql`, `04_rutinas.sql`, `05_pruebas.sql` |
-| `Diagramas/` | DER en Crow's Foot, Chen, Connect to Columns, UML e IDEF1X (`.dot` editable + `.png` + `.pdf`) y `generar_diagramas.py` |
+| `Diagramas/` | DER en Crow's Foot, Chen, Connect to Columns, UML e IDEF1X (`.dot` editable + `.png` + `.pdf`) |
 | `Aplicacion/` | Solución ASP.NET Core Razor Pages en capas (Web, Negocios, Datos, Entidades) |
 | `Pruebas/` | `matriz_pruebas.csv`, capturas de cada caso y salidas reales de MySQL (`resultados_sql/`) |
-| `Documentacion/generar_reporte.py` | Script que genera `Reporte.pdf` y la matriz de pruebas |
 
 ## Requisitos
 
 - MySQL Server 8.0
 - .NET SDK 10
-- Python 3 con `reportlab`; solo hace falta para regenerar el reporte. Para regenerar los diagramas se necesita además Graphviz.
 
 ## 1. Crear la base de datos
 
