@@ -1,6 +1,6 @@
 -- =====================================================================
--- 03_consultas_vistas.sql : 10 consultas documentadas, 2 vistas y
--- transacciones (COMMIT y ROLLBACK). Ejecutar después de 02_datos.sql
+-- 03_consultas_vistas.sql : 10 consultas documentadas, la función fn_saldo_cita,
+-- 2 vistas y transacciones (COMMIT y ROLLBACK). Ejecutar después de 02_datos.sql
 -- =====================================================================
 USE sonrisa_derrisa;
 
@@ -91,17 +91,16 @@ ORDER BY total_tratamientos DESC;
 -- LIBRE ELECCIÓN (2)
 -- ---------------------------------------------------------------------
 
--- Q9 (tablas derivadas + HAVING) Citas con saldo pendiente (RN12).
-SELECT c.id_cita, c.fecha, CONCAT(p.nombre, ' ', p.apellidos) AS paciente,
-       t.total, IFNULL(pg.pagado, 0) AS pagado, t.total - IFNULL(pg.pagado, 0) AS saldo
-FROM cita c
-JOIN paciente p ON p.id_paciente = c.id_paciente
-JOIN (SELECT id_cita, SUM(precio_aplicado) AS total FROM detalle_cita GROUP BY id_cita) t
-     ON t.id_cita = c.id_cita
-LEFT JOIN (SELECT id_cita, SUM(monto) AS pagado FROM pago GROUP BY id_cita) pg
-     ON pg.id_cita = c.id_cita
-HAVING saldo > 0
-ORDER BY saldo DESC;
+-- Q9 (JOIN 3 tablas + COUNT + HAVING) Dentistas con tres o más citas activas (no canceladas).
+SELECT CONCAT(d.nombre, ' ', d.apellidos) AS dentista, e.nombre AS especialidad,
+       COUNT(*) AS citas_activas
+FROM dentista d
+JOIN especialidad e ON e.id_especialidad = d.id_especialidad
+JOIN cita c         ON c.id_dentista     = d.id_dentista
+WHERE c.estado <> 'Cancelada'
+GROUP BY d.id_dentista, d.nombre, d.apellidos, e.nombre
+HAVING COUNT(*) >= 3
+ORDER BY citas_activas DESC;
 
 -- Q10 (UNION, operación de conjunto) Directorio telefónico de pacientes y dentistas.
 SELECT 'Paciente' AS tipo, CONCAT(nombre, ' ', apellidos) AS nombre, telefono
@@ -111,6 +110,25 @@ SELECT 'Dentista', CONCAT(nombre, ' ', apellidos), telefono
 FROM dentista
 WHERE telefono IS NOT NULL
 ORDER BY tipo, nombre;
+
+-- ---------------------------------------------------------------------
+-- FUNCIÓN fn_saldo_cita (RN12)
+-- Se crea aquí, antes de las vistas, porque vw_saldo_citas la usa.
+-- Saldo de una cita = suma de precios aplicados - suma de pagos.
+-- ---------------------------------------------------------------------
+DROP FUNCTION IF EXISTS fn_saldo_cita;
+DELIMITER //
+CREATE FUNCTION fn_saldo_cita(p_id_cita INT)
+RETURNS DECIMAL(10,2)
+READS SQL DATA
+BEGIN
+    DECLARE v_total  DECIMAL(10,2);
+    DECLARE v_pagado DECIMAL(10,2);
+    SELECT IFNULL(SUM(precio_aplicado), 0) INTO v_total  FROM detalle_cita WHERE id_cita = p_id_cita;
+    SELECT IFNULL(SUM(monto), 0)           INTO v_pagado FROM pago         WHERE id_cita = p_id_cita;
+    RETURN v_total - v_pagado;
+END//
+DELIMITER ;
 
 -- ---------------------------------------------------------------------
 -- VISTAS (2)
@@ -134,10 +152,9 @@ CREATE OR REPLACE VIEW vw_saldo_citas AS
 SELECT c.id_cita, c.fecha, c.estado,
        p.id_paciente, CONCAT(p.nombre, ' ', p.apellidos) AS paciente,
        CONCAT(d.nombre, ' ', d.apellidos) AS dentista,
-       IFNULL((SELECT SUM(dc.precio_aplicado) FROM detalle_cita dc WHERE dc.id_cita = c.id_cita), 0) AS total,
-       IFNULL((SELECT SUM(pg.monto) FROM pago pg WHERE pg.id_cita = c.id_cita), 0)                   AS pagado,
-       IFNULL((SELECT SUM(dc.precio_aplicado) FROM detalle_cita dc WHERE dc.id_cita = c.id_cita), 0)
-     - IFNULL((SELECT SUM(pg.monto) FROM pago pg WHERE pg.id_cita = c.id_cita), 0)                   AS saldo
+       (SELECT IFNULL(SUM(precio_aplicado), 0) FROM detalle_cita WHERE id_cita = c.id_cita) AS total,
+       (SELECT IFNULL(SUM(monto), 0) FROM pago WHERE id_cita = c.id_cita)                    AS pagado,
+       fn_saldo_cita(c.id_cita)                                                              AS saldo
 FROM cita c
 JOIN paciente p ON p.id_paciente = c.id_paciente
 JOIN dentista d ON d.id_dentista = c.id_dentista

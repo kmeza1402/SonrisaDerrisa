@@ -1,5 +1,6 @@
 -- =====================================================================
--- 04_rutinas.sql : triggers, función y procedimientos almacenados
+-- 04_rutinas.sql : triggers y procedimientos almacenados
+-- (la función fn_saldo_cita está en 03_consultas_vistas.sql)
 -- Ejecutar después de 03_consultas_vistas.sql
 -- =====================================================================
 USE sonrisa_derrisa;
@@ -8,7 +9,6 @@ DROP TRIGGER   IF EXISTS trg_cita_bi;
 DROP TRIGGER   IF EXISTS trg_cita_bu;
 DROP TRIGGER   IF EXISTS trg_detalle_cita_bi;
 DROP TRIGGER   IF EXISTS trg_pago_bi;
-DROP FUNCTION  IF EXISTS fn_saldo_cita;
 DROP PROCEDURE IF EXISTS sp_atender_cita;
 DROP PROCEDURE IF EXISTS sp_estado_cuenta_paciente;
 
@@ -79,26 +79,7 @@ BEGIN
             SET MESSAGE_TEXT = 'El pago excede el saldo pendiente de la cita.';
     END IF;
 END//
--- Nota: MySQL resuelve fn_saldo_cita al disparar el trigger, no al crearlo,
--- por eso la función puede definirse a continuación.
-
--- ---------------------------------------------------------------------
--- FUNCIÓN
--- ---------------------------------------------------------------------
-
--- F1 (RN12) Saldo pendiente de una cita = suma de precios aplicados - suma de pagos.
-CREATE FUNCTION fn_saldo_cita(p_id_cita INT)
-RETURNS DECIMAL(10,2)
-READS SQL DATA
-BEGIN
-    DECLARE v_total  DECIMAL(10,2);
-    DECLARE v_pagado DECIMAL(10,2);
-
-    SELECT IFNULL(SUM(precio_aplicado), 0) INTO v_total  FROM detalle_cita WHERE id_cita = p_id_cita;
-    SELECT IFNULL(SUM(monto), 0)           INTO v_pagado FROM pago         WHERE id_cita = p_id_cita;
-
-    RETURN v_total - v_pagado;
-END//
+-- La función fn_saldo_cita que usa este trigger se crea en 03_consultas_vistas.sql.
 
 -- ---------------------------------------------------------------------
 -- PROCEDIMIENTOS
