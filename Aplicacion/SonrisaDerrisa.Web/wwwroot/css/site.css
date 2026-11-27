@@ -1,10 +1,159 @@
+:root {
+    --navy: #102a43;
+    --blue-900: #123b62;
+    --blue-700: #0b6e99;
+    --blue-500: #1597c4;
+    --blue-100: #e7f5fb;
+    --ink: #20354a;
+    --muted: #6b8194;
+    --surface: #ffffff;
+    --canvas: #f3f8fc;
+    --line: #dceaf2;
+    --shadow: 0 12px 30px rgba(16, 58, 91, .08);
+}
+
 html { font-size: 15px; }
-body { background: #f5f8fb; }
-.app-nav { background: #0f6e8c; }
-.app-nav .nav-link { color: #fff !important; }
-.card-resumen { border: 0; border-left: 4px solid #0f6e8c; }
-.table thead th { background: #e6f1f5; white-space: nowrap; }
-.vacio { padding: 2rem; text-align: center; color: #6c757d; background: #fff; border: 1px dashed #ced4da; border-radius: .5rem; }
-.badge-Programada { background: #0d6efd; }
-.badge-Atendida { background: #198754; }
-.badge-Cancelada { background: #6c757d; }
+
+body {
+    min-width: 320px;
+    color: var(--ink);
+    background: var(--canvas);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.app-nav {
+    position: relative;
+    background: linear-gradient(110deg, var(--navy) 0%, var(--blue-900) 52%, var(--blue-700) 100%);
+    box-shadow: 0 5px 24px rgba(16, 42, 67, .18);
+}
+
+.app-nav::after {
+    position: absolute;
+    right: 8%;
+    bottom: -16px;
+    width: 140px;
+    height: 32px;
+    content: "";
+    background: rgba(21, 151, 196, .16);
+    border-radius: 50%;
+    filter: blur(14px);
+}
+
+.app-nav .navbar-brand {
+    letter-spacing: -.02em;
+}
+
+.brand-mark {
+    display: inline-grid;
+    width: 2.15rem;
+    height: 2.15rem;
+    margin-right: .55rem;
+    place-items: center;
+    color: var(--navy);
+    background: #bdefff;
+    border-radius: .75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+}
+
+.app-nav .nav-link {
+    position: relative;
+    margin: 0 .15rem;
+    color: rgba(255, 255, 255, .78) !important;
+    border-radius: .65rem;
+    transition: color .2s ease, background-color .2s ease, transform .2s ease;
+}
+
+.app-nav .nav-link:hover,
+.app-nav .nav-link:focus {
+    color: #fff !important;
+    background: rgba(255, 255, 255, .12);
+    transform: translateY(-1px);
+}
+
+main { min-height: calc(100vh - 154px); }
+
+h1, h2, h3, h4 { color: var(--navy); letter-spacing: -.025em; }
+.text-muted { color: var(--muted) !important; }
+
+.btn {
+    border-radius: .65rem;
+    font-weight: 600;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--blue-700); border-color: var(--blue-700); }
+.btn-primary:hover, .btn-primary:focus { background: var(--blue-900); border-color: var(--blue-900); box-shadow: 0 7px 16px rgba(11, 110, 153, .22); }
+.btn-outline-primary { color: var(--blue-700); border-color: #9ed5e8; }
+.btn-outline-primary:hover { background: var(--blue-700); border-color: var(--blue-700); }
+
+.card, .table-responsive, form.bg-white {
+    border: 1px solid var(--line) !important;
+    border-radius: 1rem !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.card-resumen {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border: 0 !important;
+    border-top: 3px solid var(--blue-500) !important;
+    background: var(--surface);
+}
+
+.card-resumen::after {
+    position: absolute;
+    right: -25px;
+    bottom: -35px;
+    width: 100px;
+    height: 100px;
+    content: "";
+    background: var(--blue-100);
+    border-radius: 50%;
+}
+
+.card-resumen .fs-3 { position: relative; z-index: 1; color: var(--navy); }
+
+.form-control, .form-select {
+    border-color: var(--line);
+    border-radius: .6rem;
+    color: var(--ink);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 .2rem rgba(21, 151, 196, .15);
+}
+
+.table-responsive { overflow: hidden; background: var(--surface); }
+.table { margin-bottom: 0; }
+.table thead th { color: var(--blue-900); background: var(--blue-100); border-bottom: 0; white-space: nowrap; }
+.table > :not(caption) > * > * { padding: .85rem .75rem; border-color: #edf3f7; }
+.table-hover > tbody > tr:hover > * { background: #f5fbfe; }
+
+.vacio {
+    padding: 3rem 2rem;
+    color: var(--muted);
+    text-align: center;
+    background: var(--surface);
+    border: 1px dashed #b5d6e4;
+    border-radius: 1rem;
+}
+
+.badge { border-radius: .45rem; font-weight: 600; }
+.badge-Programada { background: #1677b8; }
+.badge-Atendida { background: #16846b; }
+.badge-Cancelada { background: #718096; }
+
+footer {
+    color: var(--muted);
+    border-color: var(--line) !important;
+    background: rgba(255, 255, 255, .55);
+}
+
+@media (max-width: 767.98px) {
+    .app-nav .navbar-collapse { padding-top: .75rem; }
+    .app-nav .nav-link { margin: .15rem 0; }
+    .table-responsive { border-radius: .75rem !important; }
+}

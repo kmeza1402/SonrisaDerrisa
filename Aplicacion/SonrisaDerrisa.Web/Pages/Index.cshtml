@@ -2,8 +2,14 @@
 @model IndexModel
 @{ ViewData["Title"] = "Inicio"; }
 
-<h1 class="h3 mb-1">Sonrisa Derrisa</h1>
-<p class="text-muted">Sistema de citas, tratamientos y pagos para clínica dental.</p>
+<section class="hero-panel mb-4">
+    <div>
+        <span class="eyebrow">Panel de control</span>
+        <h1 class="display-6 fw-bold mb-2">Todo listo para cuidar sonrisas.</h1>
+        <p class="hero-copy mb-0">Administra pacientes, agenda citas y da seguimiento a cada tratamiento desde un solo lugar.</p>
+    </div>
+    <div class="hero-tooth" aria-hidden="true">🦷</div>
+</section>
 
 @if (Model.Error != null)
 {
@@ -11,6 +17,13 @@
 }
 else
 {
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h2 class="h5 mb-1">Resumen de la clínica</h2>
+            <p class="text-muted small mb-0">Una vista rápida de tus registros actuales.</p>
+        </div>
+        <span class="status-dot"><span></span> Sistema activo</span>
+    </div>
     <div class="row g-3">
         @foreach (var c in Model.Conteos)
         {
@@ -24,8 +37,51 @@ else
     </div>
 }
 
-<div class="mt-4 d-flex flex-wrap gap-2">
-    <a class="btn btn-primary" asp-page="/Citas/Editar">Agendar cita</a>
-    <a class="btn btn-outline-primary" asp-page="/Pacientes/Editar">Nuevo paciente</a>
-    <a class="btn btn-outline-secondary" asp-page="/Reportes/Saldos">Ver saldos pendientes</a>
+<section class="quick-actions mt-4">
+    <div>
+        <h2 class="h5 mb-1">Acciones rápidas</h2>
+        <p class="text-muted small mb-0">Empieza con una de las tareas más frecuentes.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+        <a class="btn btn-primary" asp-page="/Citas/Editar"><span aria-hidden="true">＋</span> Agendar cita</a>
+        <a class="btn btn-outline-primary" asp-page="/Pacientes/Editar">Nuevo paciente</a>
+        <a class="btn btn-outline-secondary" asp-page="/Reportes/Saldos">Ver saldos pendientes</a>
+    </div>
+</section>
+
+@section Scripts {
+    <style>
+        .hero-panel {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 210px;
+            padding: 2.5rem 3rem;
+            overflow: hidden;
+            color: #fff;
+            background: linear-gradient(115deg, #102a43, #0b6e99 65%, #1597c4);
+            border-radius: 1.25rem;
+            box-shadow: 0 16px 35px rgba(16, 58, 91, .2);
+        }
+
+        .hero-panel::before, .hero-panel::after {
+            position: absolute;
+            content: "";
+            border: 1px solid rgba(255, 255, 255, .16);
+            border-radius: 50%;
+        }
+
+        .hero-panel::before { width: 280px; height: 280px; right: 7%; top: -150px; }
+        .hero-panel::after { width: 190px; height: 190px; right: -35px; bottom: -105px; }
+        .hero-panel h1 { position: relative; z-index: 1; max-width: 600px; color: #fff; }
+        .eyebrow { position: relative; z-index: 1; display: block; margin-bottom: .6rem; color: #bdefff; font-size: .73rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+        .hero-copy { position: relative; z-index: 1; max-width: 530px; color: rgba(255, 255, 255, .78); }
+        .hero-tooth { position: relative; z-index: 1; padding: 1.4rem; font-size: 4rem; line-height: 1; background: rgba(255, 255, 255, .13); border: 1px solid rgba(255, 255, 255, .2); border-radius: 1.25rem; transform: rotate(7deg); }
+        .status-dot { color: #16846b; font-size: .78rem; font-weight: 600; }
+        .status-dot span { display: inline-block; width: .5rem; height: .5rem; margin-right: .25rem; vertical-align: 1px; background: #20b486; border-radius: 50%; box-shadow: 0 0 0 4px rgba(32, 180, 134, .12); }
+        .quick-actions { padding: 1.25rem 1.5rem; background: #fff; border: 1px solid var(--line); border-radius: 1rem; box-shadow: var(--shadow); }
+        @@media (max-width: 575.98px) { .hero-panel { min-height: 250px; padding: 2rem 1.5rem; } .hero-tooth { position: absolute; right: 1.5rem; bottom: 1.5rem; font-size: 2.25rem; } }
+    </style>
+}
 </div>

@@ -11,15 +11,18 @@
     <header>
         <nav class="navbar navbar-expand-md navbar-dark app-nav mb-4">
             <div class="container">
-                <a class="navbar-brand fw-bold" asp-page="/Index">🦷 Sonrisa Derrisa</a>
+                <a class="navbar-brand fw-bold d-flex align-items-center" asp-page="/Index">
+                    <span class="brand-mark" aria-hidden="true">🦷</span>
+                    <span>Sonrisa <span class="fw-normal">Derrisa</span></span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-label="Menú"><span class="navbar-toggler-icon"></span></button>
                 <div class="navbar-collapse collapse">
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav ms-auto align-items-md-center">
                         <li class="nav-item"><a class="nav-link" asp-page="/Pacientes/Index">Pacientes</a></li>
                         <li class="nav-item"><a class="nav-link" asp-page="/Dentistas/Index">Dentistas</a></li>
                         <li class="nav-item"><a class="nav-link" asp-page="/Citas/Index">Citas</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-page="/Reportes/Saldos">Reporte de saldos</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Reportes/Saldos">Saldos</a></li>
                     </ul>
                 </div>
             </div>
@@ -42,8 +45,11 @@
             @RenderBody()
         </main>
     </div>
-    <footer class="border-top text-muted py-3 small">
-        <div class="container">Sonrisa Derrisa · Proyecto Final Bases de Datos · Equipo Bombones</div>
+    <footer class="border-top py-4 small mt-4">
+        <div class="container d-flex flex-column flex-sm-row justify-content-between gap-2">
+            <span class="fw-semibold">Sonrisa Derrisa</span>
+            <span>Gestión dental simple, clara y humana · Equipo Bombones</span>
+        </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
