@@ -12,6 +12,48 @@
     --shadow: 0 12px 30px rgba(16, 58, 91, .08);
 }
 
+.error-screen {
+    max-width: 680px;
+    margin: 4rem auto;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow);
+}
+
+.error-icon {
+    display: grid;
+    width: 4.5rem;
+    height: 4.5rem;
+    margin: 0 auto 1.5rem;
+    place-items: center;
+    color: var(--blue-700);
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--blue-100);
+    border: 8px solid #f3fbfe;
+    border-radius: 1.35rem;
+}
+
+.error-screen .eyebrow {
+    display: block;
+    color: var(--blue-700);
+    font-size: .73rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.error-screen h1 { margin: .55rem 0 .75rem; font-size: clamp(1.7rem, 4vw, 2.3rem); }
+.error-message { max-width: 520px; margin: 0 auto; color: var(--muted); line-height: 1.65; }
+.error-help { max-width: 500px; margin: 1.5rem auto 0; padding: 1rem 1.25rem; color: var(--blue-900); text-align: left; background: #f5fbfe; border: 1px solid var(--line); border-radius: .75rem; }
+.error-help ul { margin: .55rem 0 0; padding-left: 1.2rem; color: var(--muted); }
+.error-help li + li { margin-top: .3rem; }
+.error-reference { color: var(--muted); font-size: .78rem; }
+.error-reference code { color: var(--blue-700); }
+
 html { font-size: 15px; }
 
 body {
@@ -156,4 +198,5 @@ footer {
     .app-nav .navbar-collapse { padding-top: .75rem; }
     .app-nav .nav-link { margin: .15rem 0; }
     .table-responsive { border-radius: .75rem !important; }
+    .error-screen { margin: 2rem auto; padding: 2.25rem 1.25rem; }
 }
